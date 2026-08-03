@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking — StevePics Studio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page-booking">
+    <header class="hero">
+      <nav class="nav container" aria-label="Primary navigation">
+        <a class="brand" href="index.html"><img src="logo.png" alt="StevePics Studio logo" class="logo"/>StevePics Studio</a>
+        <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="nav-links">
+          <a href="about.html">About</a>
+          <a href="services.html">Services</a>
+          <a href="booking.html" class="active">Booking</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="location.html">Location</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section container">
+        <div class="section-heading">
+          <p class="eyebrow">Book a session</p>
+          <h2>Reserve your date — tell us about the shoot</h2>
+        </div>
+        <form id="booking-form" class="contact-form">
+          <input type="text" name="name" placeholder="Your name" required />
+          <input type="email" name="email" placeholder="Your email" required />
+          <input type="tel" name="phone" placeholder="Phone (optional)" />
+          <input type="date" name="preferredDate" />
+          <select class="form-control" name="service">
+            <option value="Select Shoot">Select Service</option>
+            <option value="Photography">Photography</option>
+            <option value="Videography">Videography</option>
+            <option value="Branding">Branding & Creative Direction</option>
+          </select>
+          <textarea name="notes" rows="4" placeholder="Project details or notes"></textarea>
+          <button type="submit" class="btn btn-primary">Send Booking Request</button>
+          <p id="booking-message" class="form-message" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-content">
+        <div class="footer-grid">
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <div class="footer-links">
+              <a href="about.html">About</a><br />
+              <a href="services.html">Services</a><br />
+              <a href="booking.html">Booking</a><br />
+              <a href="gallery.html">Gallery</a><br />
+              <a href="location.html">Location</a>
+            </div>
+          </div>
+          <div>
+            <div class="footer-heading">Contact Us</div>
+            <div>
+              <a href="mailto:contact@stevepicstudio.com">contact@stevepicstudio.com</a><br />
+              <a href="https://wa.me/+256780831989" target="_blank" rel="noopener noreferrer">+256 (780) 831-989</a><br />
+              <a href="mailto:ibrahimetoru02@gmail.com">Developer: ibrahimetoru02@gmail.com</a>
+            </div>
+          </div>
+          <div>
+            <div class="footer-heading">StevePic Studio</div>
+            <div>Crafted for stories worth remembering.</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+       &copy; <span id="year"></span> StevePic Studio. All rights reserved.
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('booking-form');
+        const msg = document.getElementById('booking-message');
+
+        form?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const fd = new FormData(form);
+          const booking = {
+            name: fd.get('name'),
+            email: fd.get('email'),
+            phone: fd.get('phone'),
+            date: fd.get('preferredDate'),
+            service: fd.get('service'),
+            notes: fd.get('notes'),
+            createdAt: new Date().toISOString()
+          };
+
+          msg.textContent = 'Sending your booking request...';
+          msg.className = 'form-message';
+
+          try {
+            const existing = JSON.parse(localStorage.getItem('stevepic-bookings') || '[]');
+            existing.push(booking);
+            localStorage.setItem('stevepic-bookings', JSON.stringify(existing));
+
+            const to = 'ibrahimetoru02@gmail.com';
+            const subject = encodeURIComponent('New booking request from StevePics Studio');
+            const body = encodeURIComponent(
+              `Name: ${booking.name || ''}\n` +
+              `Email: ${booking.email || ''}\n` +
+              `Phone: ${booking.phone || ''}\n` +
+              `Preferred Date: ${booking.date || ''}\n` +
+              `Service: ${booking.service || ''}\n` +
+              `Notes: ${booking.notes || ''}\n` +
+              `Submitted: ${booking.createdAt || ''}`
+            );
+
+            window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+            msg.textContent = 'Your email app should open with the booking details. Please send it from there.';
+            msg.className = 'form-message success';
+            form.reset();
+          } catch (err) {
+            msg.textContent = 'Your booking was saved locally, but the email could not be opened automatically. Please email us directly.';
+            msg.className = 'form-message error';
+            console.warn(err);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
