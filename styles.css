@@ -386,6 +386,25 @@ h1 {
   font: inherit;
 }
 
+.contact-form .date-field {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.contact-form .date-label {
+  color: #9ba8c2;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.contact-form .date-field input {
+  flex: 1;
+  min-width: 0;
+}
+
 .contact-form input:focus,
 .contact-form textarea:focus {
   outline: 2px solid rgba(255, 138, 91, 0.45);
@@ -395,6 +414,16 @@ h1 {
 .contact-form input::placeholder,
 .contact-form textarea::placeholder {
   color: #9ba8c2;
+}
+
+@media (max-width: 480px) {
+  .contact-form .date-field {
+    gap: 0.5rem;
+  }
+
+  .contact-form .date-label {
+    font-size: 0.9rem;
+  }
 }
 
 .form-message {
@@ -415,8 +444,34 @@ h1 {
   color: #b7cdff;
 }
 
-/* Contact icons removed per user preference; text links are used instead */
+.contact-item {
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+  color: #9ba8c2;
+  text-decoration: none;
+}
+.contact-item .icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  color: #9ba8c2;
+}
+.contact-item svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: currentColor;
+}
+.contact-item:hover,
+.contact-item:focus {
+  color: #fff;
+}
 
+/* End footer contact icons */
 .reveal {
   opacity: 0;
   transform: translateY(20px);
@@ -505,6 +560,14 @@ h1 {
   font-size: 0.95rem;
   margin-top: 20px;
   margin-bottom: 0;
+}
+.contact-info a{
+  text-decoration: none;
+  color: #9ba8c2;
+
+}
+.contact-info a:hover{
+  color: #fff;
 }
 
 .footer-bottom a {
@@ -601,4 +664,12 @@ h1 {
   .nav-links a:hover {
     background: rgba(255, 255, 255, 0.12);
   }
+}
+
+
+
+.gallery-img img{
+ 
+ 
+  object-fit: cover;
 }
