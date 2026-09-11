@@ -115,6 +115,19 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Unable to save inquiry locally:', error);
       }
 
+      // Open the user's default email app with a pre-filled message.
+      try {
+        const studioEmail = 'ibrahimetoru02@gmail.com';
+        const subject = encodeURIComponent(`Inquiry from ${name}`);
+        const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+        const mailto = `mailto:${studioEmail}?subject=${subject}&body=${body}`;
+        // Use location.href so mobile devices open the mail app reliably.
+        window.location.href = mailto;
+        form.setAttribute('action', mailto);
+      } catch (err) {
+        console.warn('Could not open mail client:', err);
+      }
+
       form.reset();
       submitButton.disabled = false;
       submitButton.textContent = 'Send Inquiry';
