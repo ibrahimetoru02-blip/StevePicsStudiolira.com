@@ -36,7 +36,8 @@
         <form id="booking-form" class="contact-form">
           <input type="text" name="name" placeholder="Your name" required />
           <input type="email" name="email" placeholder="Your email" required />
-          <input type="tel" name="phone" placeholder="Phone (optional)" />
+          <input type="tel" name="phone" placeholder="WhatsApp number" aria-label="WhatsApp number" />
+          <input type="text" name="address" placeholder="Address / Location" />
           <label class="date-field" for="preferredDate">
             <span class="date-label">Date for event</span>
             <input type="date" id="preferredDate" name="preferredDate" />
@@ -114,10 +115,7 @@
             name: fd.get('name'),
             email: fd.get('email'),
             phone: fd.get('phone'),
-            date: fd.get('preferredDate'),
-            service: fd.get('service'),
-            notes: fd.get('notes'),
-            createdAt: new Date().toISOString()
+            address: fd.get('address'),
           };
 
           msg.textContent = 'Sending your booking request...';
@@ -134,6 +132,7 @@
               `Name: ${booking.name || ''}\n` +
               `Email: ${booking.email || ''}\n` +
               `Phone: ${booking.phone || ''}\n` +
+              `Address: ${booking.address || ''}\n` +
               `Preferred Date: ${booking.date || ''}\n` +
               `Service: ${booking.service || ''}\n` +
               `Notes: ${booking.notes || ''}\n` +
