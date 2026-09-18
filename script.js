@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('contact-form');
   const formMessage = document.getElementById('form-message');
   const submitButton = form?.querySelector('button[type="submit"]');
+  const bookingForm = document.getElementById('booking-form');
+  const bookingMessage = document.getElementById('booking-message');
+  const bookingSubmitButton = bookingForm?.querySelector('button[type="submit"]');
   const yearEl = document.getElementById('year');
   const backToTopButton = document.getElementById('backToTop');
   const revealItems = document.querySelectorAll('.hero-card, .info-card, .portfolio-card, .stats > div');
@@ -78,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formMessage.className = `form-message ${type}`;
   };
 
-  form?.addEventListener('submit', (event) => {
+  form?.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const formData = new FormData(form);
@@ -99,39 +102,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
     submitButton.disabled = true;
     submitButton.textContent = 'Sending...';
-    showFormMessage('Thank you! We are preparing your inquiry.', 'info');
+    showFormMessage('Sending your inquiry...', 'info');
 
-    window.setTimeout(() => {
-      try {
-        const savedInquiries = JSON.parse(localStorage.getItem('stevepic-inquiries') || '[]');
-        savedInquiries.push({
-          name,
-          email,
-          message,
-          createdAt: new Date().toISOString()
-        });
-        localStorage.setItem('stevepic-inquiries', JSON.stringify(savedInquiries));
-      } catch (error) {
-        console.warn('Unable to save inquiry locally:', error);
-      }
+    try {
+      const response = await fetch('api/submit.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'inquiry', name, email, message })
+      });
+      const result = await response.json();
 
-      // Open the user's default email app with a pre-filled message.
-      try {
-        const studioEmail = 'ibrahimetoru02@gmail.com';
-        const subject = encodeURIComponent(`Inquiry from ${name}`);
-        const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
-        const mailto = `mailto:${studioEmail}?subject=${subject}&body=${body}`;
-        // Use location.href so mobile devices open the mail app reliably.
-        window.location.href = mailto;
-        form.setAttribute('action', mailto);
-      } catch (err) {
-        console.warn('Could not open mail client:', err);
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || 'The inquiry could not be saved.');
       }
 
       form.reset();
+      showFormMessage(result.message, 'success');
+    } catch (error) {
+      showFormMessage(error.message || 'The inquiry could not be sent. Please try again.', 'error');
+    } finally {
       submitButton.disabled = false;
       submitButton.textContent = 'Send Inquiry';
-      showFormMessage(`Thanks, ${name}! We will get back to you shortly.`, 'success');
-    }, 1200);
+    }
+  });
+
+  bookingForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(bookingForm);
+    const booking = Object.fromEntries(formData.entries());
+    bookingSubmitButton.disabled = true;
+    bookingSubmitButton.textContent = 'Sending...';
+    bookingMessage.textContent = 'Sending your booking request...';
+    bookingMessage.className = 'form-message info';
+
+    try {
+      const response = await fetch('api/submit.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'booking', ...booking })
+      });
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || 'The booking could not be saved.');
+      }
+
+      bookingForm.reset();
+      bookingMessage.textContent = result.message;
+      bookingMessage.className = 'form-message success';
+    } catch (error) {
+      bookingMessage.textContent = error.message || 'The booking could not be sent. Please try again.';
+      bookingMessage.className = 'form-message error';
+    } finally {
+      bookingSubmitButton.disabled = false;
+      bookingSubmitButton.textContent = 'Send Booking Request';
+    }
   });
 });
